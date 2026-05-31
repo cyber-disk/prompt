@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI Study Notes Prompt Generator</title>
+<title>AI Prompt Generator Suite</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
@@ -20,438 +19,368 @@
 body{
     background:linear-gradient(135deg,#0f172a,#1e293b);
     min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:30px;
     color:white;
+    padding:20px;
 }
 
 .container{
-    width:100%;
-    max-width:900px;
+    max-width:1000px;
+    margin:auto;
     background:rgba(255,255,255,0.08);
     backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:25px;
     border:1px solid rgba(255,255,255,0.1);
-    border-radius:25px;
-    padding:35px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.4);
 }
 
-.title{
-    text-align:center;
-    margin-bottom:30px;
+/* Tabs */
+.tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
 }
 
-.title h1{
-    font-size:38px;
-    font-weight:700;
-    margin-bottom:10px;
-}
-
-.title p{
-    color:#cbd5e1;
-}
-
-.form-group{
-    margin-bottom:22px;
-}
-
-label{
-    display:block;
-    margin-bottom:8px;
-    font-weight:500;
-}
-
-input,
-textarea,
-select{
-    width:100%;
-    padding:14px 16px;
+.tab-btn{
+    flex:1;
+    padding:12px;
     border:none;
-    outline:none;
-    border-radius:14px;
-    background:#f8fafc;
-    color:#111827;
-    font-size:15px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    background:rgba(255,255,255,0.1);
+    color:white;
+}
+
+.tab-btn.active{
+    background:#3b82f6;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+input, textarea, select{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    margin-top:8px;
+    margin-bottom:15px;
+    font-size:14px;
 }
 
 textarea{
-    min-height:150px;
+    min-height:120px;
     resize:vertical;
+    color:#111;
 }
 
-/* Image Upload & Dropzone Styling */
-.upload-container {
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    padding: 25px;
-    border-radius: 14px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.03);
-    cursor: pointer;
-    transition: 0.3s;
-    margin-bottom: 22px;
-}
-
-.upload-container:hover, .upload-container.dragover {
-    border-color: #3b82f6;
-    background: rgba(59, 130, 246, 0.05);
-}
-
-.upload-container p {
-    font-size: 14px;
-    color: #cbd5e1;
-}
-
-.upload-container span {
-    display: block;
-    font-size: 11px;
-    color: #94a3b8;
-    margin-top: 5px;
-}
-
-#status {
-    font-size: 13px;
-    color: #3b82f6;
-    margin-top: 10px;
-    font-weight: 500;
-    display: none;
-}
-
-.row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.triple-row {
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:20px;
-}
-
+/* Buttons */
 button{
-    border:none;
     cursor:pointer;
-    transition:0.3s;
+    border:none;
 }
 
-.generate-btn{
+.primary-btn{
     width:100%;
-    padding:16px;
-    border-radius:14px;
-    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    padding:14px;
+    border-radius:12px;
+    background:#3b82f6;
     color:white;
-    font-size:17px;
     font-weight:600;
     margin-top:10px;
 }
 
-.generate-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 8px 20px rgba(37,99,235,0.4);
-}
-
-.output-box{
-    margin-top:30px;
-}
-
-.output-box textarea{
-    background:#0f172a;
-    color:#e2e8f0;
-    border:1px solid rgba(255,255,255,0.1);
+.primary-btn:hover{
+    background:#2563eb;
 }
 
 .copy-btn{
-    margin-top:15px;
     width:100%;
-    padding:14px;
-    border-radius:14px;
+    padding:12px;
+    border-radius:12px;
     background:#10b981;
+    margin-top:10px;
     color:white;
-    font-size:16px;
-    font-weight:600;
 }
 
-.copy-btn:hover{
-    background:#059669;
+/* Output */
+.output{
+    background:#0f172a;
+    color:#e2e8f0;
 }
 
-.footer{
-    margin-top:20px;
+/* Upload box */
+.upload{
+    border:2px dashed rgba(255,255,255,0.3);
+    padding:15px;
+    border-radius:12px;
     text-align:center;
-    color:#94a3b8;
-    font-size:14px;
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+/* Grid */
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
 
 @media(max-width:768px){
-    .row, .triple-row{
-        grid-template-columns:1fr;
-    }
-    .title h1{
-        font-size:28px;
-    }
+    .grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
 
-    <div class="title">
-        <h1>AI Study Notes Prompt Generator</h1>
-        <p>Create Dynamic & Unique AI Prompts Instantly</p>
+<h2 style="text-align:center;margin-bottom:15px;">AI Prompt Generator Suite</h2>
+
+<!-- Tabs -->
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('qna')">Q&A Prompt Generator</button>
+    <button class="tab-btn" onclick="switchTab('study')">Study Notes Generator</button>
+</div>
+
+<!-- ================= QNA TOOL ================= -->
+<div id="qna" class="section active">
+
+    <label>Language</label>
+    <select id="q_lang">
+        <option value="en">English</option>
+        <option value="gu">Gujarati</option>
+    </select>
+
+    <!-- ✅ NEW FEATURE -->
+    <label>Notes Type</label>
+    <select id="q_notesType">
+        <option value="Normal">Normal Q&A</option>
+        <option value="Exam">Exam Preparation Notes</option>
+        <option value="Flashcard">Flashcard Style (Active Recall)</option>
+        <option value="Short">Short Notes</option>
+        <option value="Detailed">Detailed Explanation</option>
+        <option value="Infographic">Infographic Style</option>
+    </select>
+
+    <label>Question</label>
+    <textarea id="question"></textarea>
+
+    <label>Answer</label>
+    <textarea id="answer"></textarea>
+
+    <button class="primary-btn" onclick="generateQNA()">Generate Prompt</button>
+
+    <h3>Output</h3>
+    <textarea id="q_output" class="output" readonly></textarea>
+    <button class="copy-btn" onclick="copy('q_output')">Copy</button>
+
+</div>
+
+<!-- ================= STUDY TOOL ================= -->
+<div id="study" class="section">
+
+    <label>Topic Heading</label>
+    <input id="topic">
+
+    <label>Upload Image / OCR Text</label>
+    <div class="upload" onclick="document.getElementById('img').click()">
+        Click or Drag Image Here
+        <input type="file" id="img" hidden multiple onchange="ocr(event)">
     </div>
 
-    <div class="form-group">
-        <label>Topic Heading</label>
-        <input type="text" id="topic" placeholder="Enter topic heading or let Auto-Heading fill it">
-    </div>
+    <label>Description</label>
+    <textarea id="desc"></textarea>
 
-    <div class="form-group">
-        <label>Extract Text From Image / Document Queue</label>
-        <div class="upload-container" id="dropZone" onclick="document.getElementById('imageInput').click()">
-            <p>📸 Click or drag to upload files, or press <strong>Ctrl + V</strong> to paste snapshot directly</p>
-            <span>Supports multiple items simultaneously (Eng, Guj, Hin text datasets)</span>
-            <input type="file" id="imageInput" accept="image/*" multiple onchange="handleFileSelection(event)">
-            <div id="status">Reading image content... Please wait.</div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Topic Description / Extracted Text</label>
-        <textarea id="description" placeholder="Write topic details or let image extraction fill this area..."></textarea>
-    </div>
-
-    <div class="triple-row">
-
-        <div class="form-group">
+    <div class="grid">
+        <div>
             <label>Notes Type</label>
-            <select id="notesType">
-                <option value="Short Notes">Short Notes</option>
-                <option value="Detailed Notes">Detailed Notes</option>
-                <option value="Exam Preparation Notes">Exam Preparation Notes</option>
-                <option value="Mind Map Style Notes">Mind Map Style Notes</option>
-                <option value="Bullet Point Notes">Bullet Point Notes</option>
-                <option value="Revision Notes">Revision Notes</option>
-                <option value="Cornell Method Notes">Cornell Method Notes</option>
-                <option value="Feynman Technique Explainer">Feynman Technique Explainer</option>
-                <option value="Active Recall Q&A Flashcard Notes">Active Recall Q&A Flashcard Notes</option>
-                <option value="Case Study & Real-World Application Notes">Case Study & Application Notes</option>
-                <option value="Cheatsheet Formula & Definition Matrix">Cheatsheet Formula & Matrix</option>
-                <option value="Chronological Timeline & Process Flow Notes">Timeline & Process Flow Notes</option>
+            <select id="type">
+                <option>Short Notes</option>
+                <option>Detailed Notes</option>
+                <option>Feynman Technique Explainer</option>
+                <option>Active Recall Q&A Flashcard Notes</option>
+                <option>Cornell Method Notes</option>
             </select>
         </div>
 
-        <div class="form-group">
-            <label>Target Audience (Tone)</label>
-            <select id="targetAudience">
-                <option value="Kid Friendly (Simple Analogies)">Kid Friendly (Simple Analogies)</option>
-                <option value="High School/College Level (Standard)" selected>High School/College Level (Standard)</option>
-                <option value="Academic/PhD Level (Technical & Rigorous)">Academic/PhD Level (Technical & Rigorous)</option>
-            </select>
-        </div>
-
-        <div class="form-group">
+        <div>
             <label>Language</label>
-            <select id="language">
+            <select id="lang">
                 <option>English</option>
                 <option>Gujarati</option>
                 <option>Hindi</option>
             </select>
         </div>
-
     </div>
 
-    <button class="generate-btn" onclick="generatePrompt()">
-        Generate Professional Prompt ✨
-    </button>
+    <button class="primary-btn" onclick="generateStudy()">Generate Study Prompt</button>
 
-    <div class="output-box">
-        <label>Generated Unique Prompt</label>
-        <textarea id="output" readonly placeholder="Your custom randomized prompt will appear here..."></textarea>
+    <h3>Output</h3>
+    <textarea id="s_output" class="output" readonly></textarea>
+    <button class="copy-btn" onclick="copy('s_output')">Copy</button>
 
-        <button class="copy-btn" onclick="copyPrompt()">
-            Copy Prompt
-        </button>
-    </div>
-
-    <div class="footer">
-        Designed for Professional AI Prompt Creation
-    </div>
+</div>
 
 </div>
 
 <script>
-// Clipboard Paste Event Listener
-window.addEventListener('paste', (e) => {
-    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-    let imageFiles = [];
-    for (let item of items) {
-        if (item.kind === 'file' && item.type.startsWith('image/')) {
-            imageFiles.push(item.getAsFile());
-        }
-    }
-    if (imageFiles.length > 0) processFileQueue(imageFiles);
-});
 
-// Drag and drop mechanics setup
-const dropZone = document.getElementById('dropZone');
-['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }, false);
-});
-['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); }, false);
-});
-dropZone.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = Array.from(dt.files).filter(file => file.type.startsWith('image/'));
-    if(files.length > 0) processFileQueue(files);
-});
-
-function handleFileSelection(event) {
-    const files = Array.from(event.target.files);
-    if (files.length > 0) processFileQueue(files);
+/* TAB SWITCH */
+function switchTab(tab){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
 }
 
-// Multi-Page OCR Document Queue Processing Loop
-async function processFileQueue(files) {
-    const statusDiv = document.getElementById("status");
-    const descriptionBox = document.getElementById("description");
+/* ================= QNA GENERATOR ================= */
+function generateQNA(){
+    const q = document.getElementById("question").value;
+    const a = document.getElementById("answer").value;
+    const lang = document.getElementById("q_lang").value;
+    const type = document.getElementById("q_notesType").value;
 
-    statusDiv.style.display = "block";
-    statusDiv.style.color = "#3b82f6";
-    descriptionBox.value = ""; 
-
-    for (let i = 0; i < files.length; i++) {
-        statusDiv.innerText = `⏳ Loading dictionaries & processing page ${i + 1} of ${files.length}...`;
-        try {
-            const result = await Tesseract.recognize(files[i], 'eng+guj+hin', { 
-                logger: m => {
-                    if(m.status === 'recognizing') {
-                        statusDiv.innerText = `⏳ Processing Page ${i + 1}/${files.length}: ${Math.round(m.progress * 100)}%`;
-                    }
-                } 
-            });
-            let extractedText = result.data.text.trim();
-            if (extractedText !== "") {
-                if (i === 0) autoFillHeading(extractedText);
-                const separator = files.length > 1 ? `\n\n--- Page ${i + 1} Extract Start ---\n` : '';
-                const separatorEnd = files.length > 1 ? `\n--- Page ${i + 1} Extract End ---\n` : '\n';
-                descriptionBox.value += separator + extractedText.replace(/\n\s*\n/g, '\n') + separatorEnd;
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-    statusDiv.style.color = "#10b981";
-    statusDiv.innerText = `✅ Processed ${files.length} document sheet(s) successfully!`;
-    setTimeout(() => { statusDiv.style.display = "none"; }, 5000);
-}
-
-function autoFillHeading(text) {
-    const topicInput = document.getElementById("topic");
-    if (topicInput.value.trim() === "") {
-        const textLines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-        if (textLines.length > 0) {
-            let potentialHeading = textLines[0];
-            const words = potentialHeading.split(/\s+/);
-            if (words.length > 6) potentialHeading = words.slice(0, 6).join(" ") + "...";
-            topicInput.value = potentialHeading;
-        }
-    }
-}
-
-// Randomization Datasets for unique prompt generation on every click
-const aiPersonas = [
-    "Act as an elite Ivy League Academic Professor who specializes in creating perfect, logical study layouts.",
-    "Act as a cognitive psychology expert who understands how students absorb information through memory anchors.",
-    "Act as a master premium educational content architect known for parsing dense data into beautiful, intuitive frameworks.",
-    "Act as an expert student mentor who designs high-retention structural learning materials.",
-    "Act as a professional textbook editor specializing in crystal-clear conceptual synthesis."
-];
-
-const structuralVariations = [
-    "Incorporate a dedicated 'Common Misconceptions vs. Facts' comparison table block to clean up conceptual confusion.",
-    "Add a high-yield 'Socratic Review Corner' containing 3 deep thought-provoking questions to spark critical self-testing.",
-    "Include an 'Etymology & Core Terminology Matrix' separating complex base words from their operational definitions.",
-    "Integrate a 'Mnemonics & Memory Triggers' sub-section mapping out easy acronyms to lock down the hardest details.",
-    "Provide an executive '30-Second Summary Checkpoint' at the end of each major concept break."
-];
-
-const styleModifiers = [
-    "Structure the layouts using elegant, highly organized nested markdown systems with extensive emoji anchor points.",
-    "Deliver the output utilizing ultra-clean text geometry, emphasizing critical vocabulary via striking markdown bolding.",
-    "Organize formatting with high-scannability in mind, leaving clear breathing space between distinct topic points.",
-    "Format using clear conceptual blocks, utilizing horizontal rules and visual hierarchies to prevent walls of text.",
-    "Present data with highly structured academic lists, prioritizing explicit logical connections over long prose."
-];
-
-function generatePrompt(){
-    const topic = document.getElementById("topic").value;
-    const description = document.getElementById("description").value;
-    const notesType = document.getElementById("notesType").value;
-    const targetAudience = document.getElementById("targetAudience").value;
-    const language = document.getElementById("language").value;
-
-    if(topic === "" || description === ""){
-        alert("Please specify a Topic Heading and add a Topic Description details.");
+    if(!q || !a){
+        alert("Fill Q and A");
         return;
     }
 
-    // Pick random elements from the uniqueness arrays
-    const randomPersona = aiPersonas[Math.floor(Math.random() * aiPersonas.length)];
-    const randomStructure = structuralVariations[Math.floor(Math.random() * structuralVariations.length)];
-    const randomStyle = styleModifiers[Math.floor(Math.random() * styleModifiers.length)];
+    let style = lang === "gu"
+        ? "Gujarati handwritten educational notes style"
+        : "Clean English academic infographic style";
 
-    let baseInstructions = "";
-    if(notesType === "Cornell Method Notes") {
-        baseInstructions = "- Structure the layout mimicking the classic Cornell System: Create distinct sections for Cues/Keywords on the left, core nested Notes/Details on the right, and a concise Summary block at the bottom.";
-    } else if(notesType === "Feynman Technique Explainer") {
-        baseInstructions = "- Execute the Feynman Technique: Break down complex terminology into fundamentally basic concepts. Pretend you are teaching this to someone with zero prior background, utilizing simple real-world analogies.";
-    } else if(notesType === "Active Recall Q&A Flashcard Notes") {
-        baseInstructions = "- Convert the text into a rigorous high-yield Q&A format. Provide a challenging conceptual question section followed by hidden or clearly blocked expert answers.";
-    } else if(notesType === "Case Study & Real-World Application Notes") {
-        baseInstructions = "- Highlight real-world applications. Structure using clear: Scenario/Context, Practical Implementations, and Key Takeaway conclusions.";
-    } else if(notesType === "Cheatsheet Formula & Definition Matrix") {
-        baseInstructions = "- Organize data into high-density Markdown Matrix tables. Explicitly group variables, core formulas, and essential vocabulary definitions.";
-    } else if(notesType === "Chronological Timeline & Process Flow Notes") {
-        baseInstructions = "- Map the material into a logical sequential timeline or linear step-by-step process diagram flow using clean sequential markdown blocks.";
-    } else {
-        baseInstructions = "- Use professional educational layout formatting including important headings, subheadings, bullet points, and key explanations.";
+    let structure = "";
+
+    switch(type){
+
+        case "Exam":
+            structure = `
+- Exam-focused structured answer
+- Include key headings & important terms
+`;
+            break;
+
+        case "Flashcard":
+            structure = `
+Front: Question
+Back: Short precise answer
+Add revision bullets
+`;
+            break;
+
+        case "Short":
+            structure = `
+- Very concise answer
+- Only key points
+`;
+            break;
+
+        case "Detailed":
+            structure = `
+- Deep explanation step-by-step
+- Examples included
+`;
+            break;
+
+        case "Infographic":
+            structure = `
+- Visual infographic layout
+- Left: Question
+- Right: Answer blocks
+`;
+            break;
+
+        default:
+            structure = `Normal Q&A format`;
     }
 
-    // Assembly of the completely dynamic prompt
-    const prompt = `${randomPersona}
+    const prompt = `
+Create a high-quality educational Q&A note.
 
-Your explicit goal is to draft a highly customized set of ${notesType} on the topic "${topic}".
+Structure:
+${structure}
 
-Topic Raw Content Material:
-${description}
+Style:
+${style}
 
-Strict Layout & Strategic Rules:
-1. Generate the complete notes using the ${language} language.
-2. Tailor all conceptual complexity levels, word choices, and examples so they are perfectly customized for a ${targetAudience}.
-3. Core Structural Format:
-   ${baseInstructions}
-4. Unique Element Required:
-   - ${randomStructure}
-5. Design Style Rule:
-   - ${randomStyle}
-6. Ensure the notes look premium, highly academic, engaging, and perfectly optimized for instant digital study.
+Question:
+${q}
 
-Deliver a masterfully constructed, complete study module output.`;
+Answer:
+${a}
+`;
 
-    document.getElementById("output").value = prompt;
+    document.getElementById("q_output").value = prompt;
 }
 
-function copyPrompt(){
-    const output = document.getElementById("output");
-    output.select();
-    output.setSelectionRange(0, 99999);
-    navigator.clipboard.writeText(output.value);
-    alert("Prompt Copied Successfully!");
+/* ================= STUDY GENERATOR ================= */
+
+const personas = [
+"Act as Ivy League professor",
+"Act as cognitive psychology expert",
+"Act as elite study designer"
+];
+
+const structures = [
+"Add misconception vs fact table",
+"Add 3 critical thinking questions",
+"Add mnemonic section"
+];
+
+function generateStudy(){
+    const topic = document.getElementById("topic").value;
+    const desc = document.getElementById("desc").value;
+    const type = document.getElementById("type").value;
+    const lang = document.getElementById("lang").value;
+
+    if(!topic || !desc){
+        alert("Fill topic and description");
+        return;
+    }
+
+    const prompt = `
+${personas[Math.floor(Math.random()*personas.length)]}
+
+Create ${type} on "${topic}"
+
+Content:
+${desc}
+
+Language: ${lang}
+
+Rule:
+${structures[Math.floor(Math.random()*structures.length)]}
+
+Make it highly structured and academic.
+`;
+
+    document.getElementById("s_output").value = prompt;
 }
+
+/* COPY */
+function copy(id){
+    const el = document.getElementById(id);
+    el.select();
+    document.execCommand("copy");
+    alert("Copied!");
+}
+
+/* OCR */
+async function ocr(e){
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const result = await Tesseract.recognize(file,'eng');
+    document.getElementById("desc").value += "\n" + result.data.text;
+}
+
 </script>
 
 </body>
