@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI Prompt Generator Suite</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Ultra Study Studio</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
+
+/* ================= GLOBAL ================= */
 *{
     margin:0;
     padding:0;
@@ -17,214 +18,194 @@
 }
 
 body{
-    background:linear-gradient(135deg,#0f172a,#1e293b);
     min-height:100vh;
-    color:white;
-    padding:20px;
-}
-
-.container{
-    max-width:1000px;
-    margin:auto;
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
-    padding:25px;
-    border:1px solid rgba(255,255,255,0.1);
-}
-
-/* Tabs */
-.tabs{
+    background: radial-gradient(circle at top,#0f172a,#020617);
     display:flex;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.tab-btn{
-    flex:1;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    font-weight:600;
-    background:rgba(255,255,255,0.1);
+    justify-content:center;
+    align-items:center;
+    padding:20px;
     color:white;
 }
 
-.tab-btn.active{
-    background:#3b82f6;
+/* ================= APP LAYOUT ================= */
+.app{
+    width:100%;
+    max-width:1200px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
 }
 
-.section{
-    display:none;
+/* ================= CARD ================= */
+.card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(25px);
+    border-radius:22px;
+    padding:22px;
+    box-shadow:0 0 30px rgba(59,130,246,0.15);
+    position:relative;
+    overflow:hidden;
 }
 
-.section.active{
+/* glowing border animation */
+.card::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background:linear-gradient(90deg,#3b82f6,#10b981,#f59e0b,#8b5cf6);
+    z-index:-1;
+    filter:blur(20px);
+    opacity:0.2;
+}
+
+/* ================= TITLE ================= */
+h1{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:10px;
+    background:linear-gradient(90deg,#60a5fa,#34d399,#f59e0b,#a78bfa);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* ================= LABEL ================= */
+label{
+    font-size:13px;
+    margin-top:10px;
     display:block;
+    opacity:0.9;
 }
 
-input, textarea, select{
+/* ================= INPUTS ================= */
+select,textarea{
     width:100%;
     padding:12px;
-    border-radius:10px;
+    margin-top:5px;
     border:none;
-    margin-top:8px;
-    margin-bottom:15px;
+    outline:none;
+    border-radius:12px;
     font-size:14px;
+    background:rgba(255,255,255,0.95);
+    color:black; /* FIX: dropdown + text now black */
+    font-weight:500;
+}
+
+/* dropdown fix */
+select option{
+    color:black;
+    background:white;
 }
 
 textarea{
     min-height:120px;
-    resize:vertical;
-    color:#111;
+    resize:none;
 }
 
-/* Buttons */
+/* ================= BUTTONS ================= */
 button{
-    cursor:pointer;
-    border:none;
-}
-
-.primary-btn{
-    width:100%;
-    padding:14px;
-    border-radius:12px;
-    background:#3b82f6;
-    color:white;
-    font-weight:600;
-    margin-top:10px;
-}
-
-.primary-btn:hover{
-    background:#2563eb;
-}
-
-.copy-btn{
     width:100%;
     padding:12px;
+    border:none;
     border-radius:12px;
-    background:#10b981;
+    font-weight:600;
+    cursor:pointer;
     margin-top:10px;
+    transition:0.25s;
+    letter-spacing:0.3px;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
     color:white;
 }
 
-/* Output */
+.btn-mix{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:black;
+}
+
+.btn-copy{
+    background:linear-gradient(135deg,#10b981,#059669);
+    color:white;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* ================= OUTPUT ================= */
 .output{
-    background:#0f172a;
-    color:#e2e8f0;
+    min-height:260px;
+    background:rgba(0,0,0,0.35);
+    color:#e5e7eb;
+    font-size:13px;
+    white-space:pre-wrap;
 }
 
-/* Upload box */
-.upload{
-    border:2px dashed rgba(255,255,255,0.3);
-    padding:15px;
-    border-radius:12px;
-    text-align:center;
-    cursor:pointer;
-    margin-bottom:15px;
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+    .app{
+        grid-template-columns:1fr;
+    }
 }
 
-/* Grid */
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-
-@media(max-width:768px){
-    .grid{grid-template-columns:1fr;}
-}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-<h2 style="text-align:center;margin-bottom:15px;">AI Prompt Generator Suite</h2>
+<!-- LEFT -->
+<div class="card">
 
-<!-- Tabs -->
-<div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('qna')">Q&A Prompt Generator</button>
-    <button class="tab-btn" onclick="switchTab('study')">Study Notes Generator</button>
-</div>
+<h1>🤖 AI Ultra Study Studio</h1>
 
-<!-- ================= QNA TOOL ================= -->
-<div id="qna" class="section active">
+<label>Language</label>
+<select id="language">
+<option>English</option>
+<option>Hindi</option>
+<option>Gujarati</option>
+</select>
 
-    <label>Language</label>
-    <select id="q_lang">
-        <option value="en">English</option>
-        <option value="gu">Gujarati</option>
-    </select>
+<label>Mode</label>
+<select id="mode">
+<option>Study Mode</option>
+<option>Exam Mode</option>
+<option>Revision Mode</option>
+<option>Interview Mode</option>
+</select>
 
-    <!-- ✅ NEW FEATURE -->
-    <label>Notes Type</label>
-    <select id="q_notesType">
-        <option value="Normal">Normal Q&A</option>
-        <option value="Exam">Exam Preparation Notes</option>
-        <option value="Flashcard">Flashcard Style (Active Recall)</option>
-        <option value="Short">Short Notes</option>
-        <option value="Detailed">Detailed Explanation</option>
-        <option value="Infographic">Infographic Style</option>
-    </select>
+<label>Topic</label>
+<textarea id="topic" placeholder="Enter your topic..."></textarea>
 
-    <label>Question</label>
-    <textarea id="question"></textarea>
+<label>Base Knowledge</label>
+<textarea id="answer" placeholder="Optional"></textarea>
 
-    <label>Answer</label>
-    <textarea id="answer"></textarea>
-
-    <button class="primary-btn" onclick="generateQNA()">Generate Prompt</button>
-
-    <h3>Output</h3>
-    <textarea id="q_output" class="output" readonly></textarea>
-    <button class="copy-btn" onclick="copy('q_output')">Copy</button>
+<button class="btn-primary" onclick="generateNotes()">Generate Notes</button>
 
 </div>
 
-<!-- ================= STUDY TOOL ================= -->
-<div id="study" class="section">
+<!-- RIGHT -->
+<div class="card">
 
-    <label>Topic Heading</label>
-    <input id="topic">
+<label>Style 1</label>
+<select id="s1"></select>
 
-    <label>Upload Image / OCR Text</label>
-    <div class="upload" onclick="document.getElementById('img').click()">
-        Click or Drag Image Here
-        <input type="file" id="img" hidden multiple onchange="ocr(event)">
-    </div>
+<label>Style 2</label>
+<select id="s2"></select>
 
-    <label>Description</label>
-    <textarea id="desc"></textarea>
+<label>Style 3</label>
+<select id="s3"></select>
 
-    <div class="grid">
-        <div>
-            <label>Notes Type</label>
-            <select id="type">
-                <option>Short Notes</option>
-                <option>Detailed Notes</option>
-                <option>Feynman Technique Explainer</option>
-                <option>Active Recall Q&A Flashcard Notes</option>
-                <option>Cornell Method Notes</option>
-            </select>
-        </div>
+<button class="btn-mix" onclick="mixStyles()">Mix AI Styles</button>
 
-        <div>
-            <label>Language</label>
-            <select id="lang">
-                <option>English</option>
-                <option>Gujarati</option>
-                <option>Hindi</option>
-            </select>
-        </div>
-    </div>
+<label>Output</label>
+<textarea id="output" class="output" readonly></textarea>
 
-    <button class="primary-btn" onclick="generateStudy()">Generate Study Prompt</button>
-
-    <h3>Output</h3>
-    <textarea id="s_output" class="output" readonly></textarea>
-    <button class="copy-btn" onclick="copy('s_output')">Copy</button>
+<button class="btn-copy" onclick="copyText()">Copy Output</button>
 
 </div>
 
@@ -232,153 +213,135 @@ button{
 
 <script>
 
-/* TAB SWITCH */
-function switchTab(tab){
-    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById(tab).classList.add('active');
-    event.target.classList.add('active');
-}
-
-/* ================= QNA GENERATOR ================= */
-function generateQNA(){
-    const q = document.getElementById("question").value;
-    const a = document.getElementById("answer").value;
-    const lang = document.getElementById("q_lang").value;
-    const type = document.getElementById("q_notesType").value;
-
-    if(!q || !a){
-        alert("Fill Q and A");
-        return;
-    }
-
-    let style = lang === "gu"
-        ? "Gujarati handwritten educational notes style"
-        : "Clean English academic infographic style";
-
-    let structure = "";
-
-    switch(type){
-
-        case "Exam":
-            structure = `
-- Exam-focused structured answer
-- Include key headings & important terms
-`;
-            break;
-
-        case "Flashcard":
-            structure = `
-Front: Question
-Back: Short precise answer
-Add revision bullets
-`;
-            break;
-
-        case "Short":
-            structure = `
-- Very concise answer
-- Only key points
-`;
-            break;
-
-        case "Detailed":
-            structure = `
-- Deep explanation step-by-step
-- Examples included
-`;
-            break;
-
-        case "Infographic":
-            structure = `
-- Visual infographic layout
-- Left: Question
-- Right: Answer blocks
-`;
-            break;
-
-        default:
-            structure = `Normal Q&A format`;
-    }
-
-    const prompt = `
-Create a high-quality educational Q&A note.
-
-Structure:
-${structure}
-
-Style:
-${style}
-
-Question:
-${q}
-
-Answer:
-${a}
-`;
-
-    document.getElementById("q_output").value = prompt;
-}
-
-/* ================= STUDY GENERATOR ================= */
-
-const personas = [
-"Act as Ivy League professor",
-"Act as cognitive psychology expert",
-"Act as elite study designer"
+/* ================= STYLE LIBRARY ================= */
+const styles = [
+"Topper Notes Style",
+"Mind Map Notes",
+"Flowchart Notes",
+"Infographic Notes",
+"Cornell Notes",
+"One-Page Revision Notes",
+"Flashcard Notes",
+"Timeline Notes",
+"Comparison Notes",
+"Mnemonic Notes",
+"Diagram-Based Notes",
+"Sticky Note Layout",
+"Magazine Style Notes",
+"Canva Style Notes",
+"Notebook Journal Style",
+"Research Paper Notes",
+"Coaching Institute Notes",
+"Storytelling Notes",
+"Interactive Notes",
+"Blueprint Style Notes",
+"Dark Mode Notes",
+"Whiteboard Teaching Notes",
+"Feynman Notes",
+"Visual Learning Notes",
+"Premium Luxury Notes",
+"Ultimate Combination (Best Result)"
 ];
 
-const structures = [
-"Add misconception vs fact table",
-"Add 3 critical thinking questions",
-"Add mnemonic section"
-];
+window.onload = () => {
+    ["s1","s2","s3"].forEach(id=>{
+        let sel = document.getElementById(id);
+        styles.forEach(st=>{
+            let opt = document.createElement("option");
+            opt.value = st;
+            opt.textContent = st;
+            sel.appendChild(opt);
+        });
+    });
+};
 
-function generateStudy(){
+/* ================= LANGUAGE ================= */
+function langRule(lang){
+    if(lang==="English") return "Respond ONLY in English.";
+    if(lang==="Hindi") return "केवल हिंदी भाषा में उत्तर दें।";
+    if(lang==="Gujarati") return "માત્ર ગુજરાતી ભાષામાં જવાબ આપવો.";
+}
+
+/* ================= GENERATE ================= */
+function generateNotes(){
+
     const topic = document.getElementById("topic").value;
-    const desc = document.getElementById("desc").value;
-    const type = document.getElementById("type").value;
-    const lang = document.getElementById("lang").value;
+    const answer = document.getElementById("answer").value;
+    const lang = document.getElementById("language").value;
+    const mode = document.getElementById("mode").value;
 
-    if(!topic || !desc){
-        alert("Fill topic and description");
+    if(!topic){
+        alert("Enter topic");
         return;
     }
 
     const prompt = `
-${personas[Math.floor(Math.random()*personas.length)]}
+generate image
 
-Create ${type} on "${topic}"
+You are an Advanced AI Learning Engine.
 
-Content:
-${desc}
+LANGUAGE RULE:
+${langRule(lang)}
 
-Language: ${lang}
+MODE: ${mode}
+TOPIC: ${topic}
+BASE KNOWLEDGE: ${answer || "Not provided"}
 
-Rule:
-${structures[Math.floor(Math.random()*structures.length)]}
-
-Make it highly structured and academic.
+TASK:
+Generate clean, structured, visually rich AI study notes.
 `;
 
-    document.getElementById("s_output").value = prompt;
+    document.getElementById("output").value = prompt;
 }
 
-/* COPY */
-function copy(id){
-    const el = document.getElementById(id);
-    el.select();
+/* ================= MIX ================= */
+function mixStyles(){
+
+    const topic = document.getElementById("topic").value;
+    const answer = document.getElementById("answer").value;
+    const lang = document.getElementById("language").value;
+
+    if(!topic){
+        alert("Enter topic first");
+        return;
+    }
+
+    const a = document.getElementById("s1").value;
+    const b = document.getElementById("s2").value;
+    const c = document.getElementById("s3").value;
+
+    const prompt = `
+generate image
+
+You are a futuristic AI Academic Designer.
+
+LANGUAGE RULE:
+${langRule(lang)}
+
+TOPIC: ${topic}
+BASE KNOWLEDGE: ${answer || "Not provided"}
+
+STYLES:
+1. ${a}
+2. ${b}
+3. ${c}
+
+RULES:
+- Visually structured output
+- No repetition
+- High exam usefulness
+- Premium AI design output
+`;
+
+    document.getElementById("output").value = prompt;
+}
+
+/* ================= COPY ================= */
+function copyText(){
+    let t = document.getElementById("output");
+    t.select();
     document.execCommand("copy");
     alert("Copied!");
-}
-
-/* OCR */
-async function ocr(e){
-    const file = e.target.files[0];
-    if(!file) return;
-
-    const result = await Tesseract.recognize(file,'eng');
-    document.getElementById("desc").value += "\n" + result.data.text;
 }
 
 </script>
